@@ -76,6 +76,13 @@
   letter-spacing: -0.5px;
 }
 
+.brand-subtitle {
+  color: #6b8f8a;
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0;
+}
+
 .login-header {
   display: flex;
   gap: 8px;
@@ -138,6 +145,77 @@
   0%, 100% { transform: translateX(0); }
   25% { transform: translateX(-5px); }
   75% { transform: translateX(5px); }
+}
+
+.social-auth-section {
+  margin-bottom: 24px;
+}
+
+.google-signin-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 14px 20px;
+  background: #fff;
+  border: 2px solid #e1e5e9;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #3c4043;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.google-signin-btn:hover {
+  background: #f8f9fa;
+  border-color: #dadce0;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  transform: translateY(-1px);
+}
+
+.google-signin-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.google-signin-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.google-icon {
+  flex-shrink: 0;
+}
+
+.divider {
+  position: relative;
+  text-align: center;
+  margin: 20px 0;
+}
+
+.divider::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #e1e5e9, transparent);
+}
+
+.divider span {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 0 16px;
+  color: #6b8f8a;
+  font-size: 14px;
+  font-weight: 500;
+  position: relative;
+  z-index: 1;
 }
 
 .login-form {
@@ -297,6 +375,16 @@
   text-align: center;
   margin-top: 16px;
   opacity: 0.8;
+}
+
+.small-row.center-note .link {
+  color: #2b8f82;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.small-row.center-note .link:hover {
+  text-decoration: underline;
 }
 
 .login-side {
