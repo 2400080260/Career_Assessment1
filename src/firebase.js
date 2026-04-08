@@ -1,21 +1,44 @@
-// Firebase configuration
 import { initializeApp } from 'firebase/app';
-import { getAuth, GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { getAnalytics } from 'firebase/analytics';
+import { getAuth, GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { firebaseConfig } from './firebase-config';
 
-// Firebase configuration (you'll need to replace this with your actual Firebase project config)
-const firebaseConfig = {
-  apiKey: "your-api-key",
-  authDomain: "your-project.firebaseapp.com",
-  projectId: "your-project-id",
-  storageBucket: "your-project.appspot.com",
-  messagingSenderId: "123456789",
-  appId: "your-app-id"
+const validateFirebaseConfig = (config) => {
+  const placeholders = [
+    'YOUR_API_KEY',
+    'YOUR_AUTH_DOMAIN',
+    'YOUR_PROJECT_ID',
+    'YOUR_STORAGE_BUCKET',
+    'YOUR_MESSAGING_SENDER_ID',
+    'YOUR_APP_ID',
+    'YOUR_MEASUREMENT_ID'
+  ];
+
+  const invalid = Object.values(config).some(value =>
+    typeof value === 'string' && placeholders.some(placeholder => value.includes(placeholder))
+  );
+
+  if (invalid) {
+    throw new Error('Firebase configuration is not set. Please update src/firebase-config.js with values from your Firebase console.');
+  }
 };
+
+validateFirebaseConfig(firebaseConfig);
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+export const analytics = getAnalytics(app);
 export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();
+
+export const signOutUser = async () => {
+  try {
+    await signOut(auth);
+  } catch (error) {
+    console.error('Error signing out:', error);
+    throw error;
+  }
+};
 
 // Google Sign In function
 export const signInWithGoogle = async () => {

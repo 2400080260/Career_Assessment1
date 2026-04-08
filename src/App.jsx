@@ -3,6 +3,7 @@ import Home from './components/Home'
 import Assessment from './components/Assessment'
 import Results from './components/Results'
 import Login from './components/Login'
+import { signOutUser } from './firebase'
 import './App.css'
 
 function App() {
@@ -19,7 +20,12 @@ function App() {
     setCurrentPage('home')
   }
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+      await signOutUser()
+    } catch (error) {
+      console.error('Error signing out:', error)
+    }
     setUser(null)
     setAssessmentScores(null)
     setCurrentPage('login')

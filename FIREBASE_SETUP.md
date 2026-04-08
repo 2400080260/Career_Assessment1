@@ -30,10 +30,10 @@ To enable Google authentication, you need to set up a Firebase project and confi
 
 ### Step 4: Update Firebase Config
 
-Replace the placeholder values in `src/firebase.js` with your actual Firebase configuration:
+Replace the placeholder values in `src/firebase-config.js` with your actual Firebase configuration:
 
 ```javascript
-const firebaseConfig = {
+export const firebaseConfig = {
   apiKey: "your-actual-api-key",
   authDomain: "your-project.firebaseapp.com",
   projectId: "your-actual-project-id",

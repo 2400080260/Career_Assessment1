@@ -33,7 +33,7 @@ export default function Login({ onLogin }) {
         uid: user.uid
       })
     } catch (error) {
-      setError('Failed to sign in with Google. Please try again.')
+      setError(`Google sign-in failed: ${error?.message || 'Please check Firebase configuration and console.'}`)
       console.error('Google sign-in error:', error)
     } finally {
       setLoading(false)
@@ -56,7 +56,7 @@ export default function Login({ onLogin }) {
         uid: user.uid
       })
     } catch (error) {
-      setError('Invalid email or password. Please try again.')
+      setError(`Invalid email or password. ${error?.message || ''}`)
       console.error('Email sign-in error:', error)
     } finally {
       setLoading(false)
@@ -90,7 +90,7 @@ export default function Login({ onLogin }) {
       if (error.code === 'auth/email-already-in-use') {
         setError('An account with this email already exists.')
       } else {
-        setError('Failed to create account. Please try again.')
+        setError(`Failed to create account. ${error?.message || 'Please try again.'}`)
       }
       console.error('Email signup error:', error)
     } finally {
