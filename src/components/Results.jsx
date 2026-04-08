@@ -6,7 +6,7 @@ const CAREER_DETAILS = {
     description: 'Design, build, and maintain software applications. Create innovative solutions using programming languages and technologies. Work in a fast-paced tech environment solving complex technical challenges.',
     icon: '💻',
     skills: ['Programming', 'Problem Solving', 'Collaboration', 'Continuous Learning'],
-    averageSalary: '₹66,00,000 - ₹1,25,00,000',
+    averageSalary: '₹25,00,000 - ₹80,00,000',
     jobOutlook: 'Excellent - Very High Demand in India'
   },
   'Doctor': {
@@ -14,7 +14,7 @@ const CAREER_DETAILS = {
     description: 'Diagnose and treat patients, improve their health and well-being. Work in hospitals, clinics, or private practice. Make a direct, meaningful impact on people\'s lives every single day.',
     icon: '⚕️',
     skills: ['Medical Knowledge', 'Patient Care', 'Decision Making', 'Empathy'],
-    averageSalary: '₹1,65,00,000 - ₹3,30,00,000',
+    averageSalary: '₹25,00,000 - ₹100,00,000',
     jobOutlook: 'Strong - High Respect & Career Stability'
   },
   'Chartered Accountant': {
@@ -22,7 +22,7 @@ const CAREER_DETAILS = {
     description: 'Manage financial records, audit accounts, and provide tax advice. Help businesses and individuals make sound financial decisions. Ensure compliance with accounting standards and regulations.',
     icon: '📊',
     skills: ['Financial Analysis', 'Attention to Detail', 'Auditing', 'Regulatory Knowledge'],
-    averageSalary: '₹50,00,000 - ₹1,25,00,000',
+    averageSalary: '₹30,00,000 - ₹80,00,000',
     jobOutlook: 'Stable - Highly Valued Qualification in India'
   },
   'Civil Engineer': {
@@ -30,7 +30,7 @@ const CAREER_DETAILS = {
     description: 'Design and oversee construction of infrastructure projects like buildings, bridges, and roads. Work on large-scale projects that shape cities and improve public infrastructure. Combine technical knowledge with creative design.',
     icon: '🏗️',
     skills: ['Project Management', 'Technical Design', 'Problem Solving', 'CAD Software'],
-    averageSalary: '₹54,00,000 - ₹1,08,00,000',
+    averageSalary: '₹25,00,000 - ₹75,00,000',
     jobOutlook: 'Good - Growing Infrastructure Development'
   },
   'Graphic Designer': {
@@ -38,7 +38,7 @@ const CAREER_DETAILS = {
     description: 'Create visual content for brands, websites, and marketing materials. Design everything from logos to complete brand identities. Express creativity while solving visual communication challenges.',
     icon: '🎨',
     skills: ['Visual Design', 'Creativity', 'Adobe Creative Suite', 'UI/UX Principles'],
-    averageSalary: '₹37,00,000 - ₹83,00,000',
+    averageSalary: '₹20,00,000 - ₹50,00,000',
     jobOutlook: 'Good - Growing Digital Design Demand'
   }
 }

@@ -2,14 +2,27 @@ import { useState } from 'react'
 import Home from './components/Home'
 import Assessment from './components/Assessment'
 import Results from './components/Results'
+import Login from './components/Login'
 import './App.css'
 
 function App() {
-  const [currentPage, setCurrentPage] = useState('home')
+  const [currentPage, setCurrentPage] = useState('login')
   const [assessmentScores, setAssessmentScores] = useState(null)
+  const [user, setUser] = useState(null)
 
   const handleStartAssessment = () => {
     setCurrentPage('assessment')
+  }
+
+  const handleLogin = (userInfo) => {
+    setUser(userInfo)
+    setCurrentPage('home')
+  }
+
+  const handleLogout = () => {
+    setUser(null)
+    setAssessmentScores(null)
+    setCurrentPage('login')
   }
 
   const handleCompleteAssessment = (scores) => {
@@ -24,6 +37,16 @@ function App() {
 
   return (
     <div className="app">
+      {currentPage !== 'login' && (
+        <header className="app-header">
+          <div className="header-inner">
+            <div>Welcome{user ? `, ${user.username}` : ''}</div>
+            <button className="logout-button" onClick={handleLogout}>Logout</button>
+          </div>
+        </header>
+      )}
+
+      {currentPage === 'login' && <Login onLogin={handleLogin} />}
       {currentPage === 'home' && <Home onStart={handleStartAssessment} />}
       {currentPage === 'assessment' && <Assessment onComplete={handleCompleteAssessment} />}
       {currentPage === 'results' && <Results scores={assessmentScores} onRestart={handleRestart} />}

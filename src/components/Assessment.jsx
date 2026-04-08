@@ -7,10 +7,10 @@ const ASSESSMENT_QUESTIONS = [
     category: 'Technical Skills',
     question: 'How comfortable are you with technical concepts and coding?',
     options: [
-      { text: 'Very comfortable, love building software', score: 95, career: 'Software Developer' },
-      { text: 'Comfortable with basics', score: 70, career: 'Civil Engineer' },
-      { text: 'Prefer creative over technical', score: 85, career: 'Graphic Designer' },
-      { text: 'Numbers and analysis appeal more', score: 80, career: 'Chartered Accountant' }
+      { text: 'Very comfortable, love building software', careers: { 'Software Developer': 100 } },
+      { text: 'Comfortable with basics', careers: { 'Civil Engineer': 80, 'Software Developer': 40 } },
+      { text: 'Prefer creative over technical', careers: { 'Graphic Designer': 90, 'Doctor': 30 } },
+      { text: 'Numbers and analysis appeal more', careers: { 'Chartered Accountant': 95, 'Doctor': 50 } }
     ]
   },
   {
@@ -18,10 +18,10 @@ const ASSESSMENT_QUESTIONS = [
     category: 'Work Environment',
     question: 'What type of work environment appeals to you most?',
     options: [
-      { text: 'Modern tech company with innovation focus', score: 95, career: 'Software Developer' },
-      { text: 'Hospital or healthcare setting', score: 100, career: 'Doctor' },
-      { text: 'Corporate office with structured environment', score: 90, career: 'Chartered Accountant' },
-      { text: 'Creative studio with artistic freedom', score: 95, career: 'Graphic Designer' }
+      { text: 'Modern tech company with innovation focus', careers: { 'Software Developer': 95 } },
+      { text: 'Hospital or healthcare setting', careers: { 'Doctor': 100 } },
+      { text: 'Corporate office with structured environment', careers: { 'Chartered Accountant': 90, 'Software Developer': 50 } },
+      { text: 'Creative studio with artistic freedom', careers: { 'Graphic Designer': 95 } }
     ]
   },
   {
@@ -29,10 +29,10 @@ const ASSESSMENT_QUESTIONS = [
     category: 'Problem Solving',
     question: 'How do you prefer to solve problems?',
     options: [
-      { text: 'Write code and test solutions', score: 95, career: 'Software Developer' },
-      { text: 'Diagnose and treat patients', score: 100, career: 'Doctor' },
-      { text: 'Design and build structures', score: 90, career: 'Civil Engineer' },
-      { text: 'Analyze numbers and financial data', score: 85, career: 'Chartered Accountant' }
+      { text: 'Write code and test solutions', careers: { 'Software Developer': 95 } },
+      { text: 'Diagnose and treat patients', careers: { 'Doctor': 100 } },
+      { text: 'Design and build structures', careers: { 'Civil Engineer': 95 } },
+      { text: 'Analyze numbers and financial data', careers: { 'Chartered Accountant': 90 } }
     ]
   },
   {
@@ -40,10 +40,10 @@ const ASSESSMENT_QUESTIONS = [
     category: 'Creative Ability',
     question: 'How important is creativity in your ideal career?',
     options: [
-      { text: 'Extremely important - visual design drives me', score: 100, career: 'Graphic Designer' },
-      { text: 'Very important for software solutions', score: 90, career: 'Software Developer' },
-      { text: 'Somewhat important for designs', score: 85, career: 'Civil Engineer' },
-      { text: 'Less important, accuracy is key', score: 75, career: 'Chartered Accountant' }
+      { text: 'Extremely important - visual design drives me', careers: { 'Graphic Designer': 100 } },
+      { text: 'Very important for software solutions', careers: { 'Software Developer': 80 } },
+      { text: 'Somewhat important for designs', careers: { 'Civil Engineer': 75 } },
+      { text: 'Less important, accuracy is key', careers: { 'Chartered Accountant': 85, 'Doctor': 80 } }
     ]
   },
   {
@@ -51,10 +51,10 @@ const ASSESSMENT_QUESTIONS = [
     category: 'People Interaction',
     question: 'How much direct human interaction do you want in your work?',
     options: [
-      { text: 'Direct patient care is essential', score: 100, career: 'Doctor' },
-      { text: 'Client consulting and presentations', score: 85, career: 'Chartered Accountant' },
-      { text: 'Collaborating with team members', score: 80, career: 'Software Developer' },
-      { text: 'Minimal interaction, focus on work', score: 90, career: 'Graphic Designer' }
+      { text: 'Direct patient care is essential', careers: { 'Doctor': 100 } },
+      { text: 'Client consulting and presentations', careers: { 'Chartered Accountant': 85 } },
+      { text: 'Collaborating with team members', careers: { 'Software Developer': 70 } },
+      { text: 'Minimal interaction, focus on work', careers: { 'Graphic Designer': 90 } }
     ]
   },
   {
@@ -62,10 +62,10 @@ const ASSESSMENT_QUESTIONS = [
     category: 'Physical Work',
     question: 'Do you prefer physical or mental work?',
     options: [
-      { text: 'Physical work on-site, building things', score: 100, career: 'Civil Engineer' },
-      { text: 'Mental work at computer', score: 95, career: 'Software Developer' },
-      { text: 'Mix of both - hands-on and creative', score: 85, career: 'Graphic Designer' },
-      { text: 'Purely mental - analysis and thinking', score: 90, career: 'Chartered Accountant' }
+      { text: 'Physical work on-site, building things', careers: { 'Civil Engineer': 100 } },
+      { text: 'Mental work at computer', careers: { 'Software Developer': 95 } },
+      { text: 'Mix of both - hands-on and creative', careers: { 'Graphic Designer': 75, 'Civil Engineer': 60 } },
+      { text: 'Purely mental - analysis and thinking', careers: { 'Chartered Accountant': 90, 'Doctor': 80 } }
     ]
   },
   {
@@ -73,10 +73,10 @@ const ASSESSMENT_QUESTIONS = [
     category: 'Impact & Purpose',
     question: 'What impact matters most to your career choice?',
     options: [
-      { text: 'Saving lives and helping patients', score: 100, career: 'Doctor' },
-      { text: 'Building technology that changes the world', score: 95, career: 'Software Developer' },
-      { text: 'Creating infrastructure and buildings', score: 90, career: 'Civil Engineer' },
-      { text: 'Creating beautiful visual experiences', score: 95, career: 'Graphic Designer' }
+      { text: 'Saving lives and helping patients', careers: { 'Doctor': 100 } },
+      { text: 'Building technology that changes the world', careers: { 'Software Developer': 95 } },
+      { text: 'Creating infrastructure and buildings', careers: { 'Civil Engineer': 90 } },
+      { text: 'Creating beautiful visual experiences', careers: { 'Graphic Designer': 95 } }
     ]
   },
   {
@@ -84,10 +84,10 @@ const ASSESSMENT_QUESTIONS = [
     category: 'Financial Management',
     question: 'How interested are you in financial matters?',
     options: [
-      { text: 'Extremely interested in numbers and finances', score: 100, career: 'Chartered Accountant' },
-      { text: 'Interested but not primary focus', score: 70, career: 'Doctor' },
-      { text: 'Interested in tech business side', score: 75, career: 'Software Developer' },
-      { text: 'Concerned about project budgets', score: 70, career: 'Civil Engineer' }
+      { text: 'Extremely interested in numbers and finances', careers: { 'Chartered Accountant': 100 } },
+      { text: 'Interested but not primary focus', careers: { 'Doctor': 50 } },
+      { text: 'Interested in tech business side', careers: { 'Software Developer': 60, 'Chartered Accountant': 50 } },
+      { text: 'Concerned about project budgets', careers: { 'Civil Engineer': 70 } }
     ]
   }
 ]
@@ -97,20 +97,20 @@ export default function Assessment({ onComplete }) {
   const [answers, setAnswers] = useState([])
   const [scores, setScores] = useState({})
 
-  const handleAnswer = (score, career) => {
-    const selectedOption = ASSESSMENT_QUESTIONS[currentQuestion].options.find(opt => opt.score === score)
+  const handleAnswer = (selectedOption) => {
     const newAnswers = [...answers, selectedOption.text]
     setAnswers(newAnswers)
 
-    setScores({
-      ...scores,
-      [career]: (scores[career] || 0) + score
+    const newScores = { ...scores }
+    Object.entries(selectedOption.careers).forEach(([career, score]) => {
+      newScores[career] = (newScores[career] || 0) + score
     })
+    setScores(newScores)
 
     if (currentQuestion < ASSESSMENT_QUESTIONS.length - 1) {
       setCurrentQuestion(currentQuestion + 1)
     } else {
-      onComplete(scores)
+      onComplete(newScores)
     }
   }
 
@@ -132,7 +132,7 @@ export default function Assessment({ onComplete }) {
             <button
               key={idx}
               className="option-button"
-              onClick={() => handleAnswer(option.score, option.career)}
+              onClick={() => handleAnswer(option)}
             >
               {option.text}
             </button>
