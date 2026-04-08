@@ -151,6 +151,17 @@
   margin-bottom: 24px;
 }
 
+#google-signin-btn {
+  width: 100%;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+#google-signin-btn > div {
+  width: 100%;
+}
+
 .google-signin-btn {
   width: 100%;
   display: flex;

@@ -3,7 +3,7 @@ import Home from './components/Home'
 import Assessment from './components/Assessment'
 import Results from './components/Results'
 import Login from './components/Login'
-import { signOutUser } from './firebase'
+import { logoutUser } from './api'
 import './App.css'
 
 function App() {
@@ -20,12 +20,8 @@ function App() {
     setCurrentPage('home')
   }
 
-  const handleLogout = async () => {
-    try {
-      await signOutUser()
-    } catch (error) {
-      console.error('Error signing out:', error)
-    }
+  const handleLogout = () => {
+    logoutUser()
     setUser(null)
     setAssessmentScores(null)
     setCurrentPage('login')
@@ -55,7 +51,7 @@ function App() {
       {currentPage === 'login' && <Login onLogin={handleLogin} />}
       {currentPage === 'home' && <Home onStart={handleStartAssessment} />}
       {currentPage === 'assessment' && <Assessment onComplete={handleCompleteAssessment} />}
-      {currentPage === 'results' && <Results scores={assessmentScores} onRestart={handleRestart} />}
+      {currentPage === 'results' && <Results scores={assessmentScores} onRestart={handleRestart} user={user} />}
     </div>
   )
 }

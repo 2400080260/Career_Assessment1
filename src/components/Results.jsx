@@ -1,3 +1,5 @@
+import { useState, useEffect } from 'react'
+import { saveAssessmentResult, getUserAssessments } from '../api'
 import '../styles/Results.css'
 
 const CAREER_DETAILS = {
@@ -43,8 +45,11 @@ const CAREER_DETAILS = {
   }
 }
 
-export default function Results({ scores, onRestart }) {
-  // Find the career with highest score
+export default function Results({ scores, onRestart, user }) {
+  const [saved, setSaved] = useState(false)
+  const [saving, setSaving] = useState(false)
+  const [previousAssessments, setPreviousAssessments] = useState([])
+
   const sortedCareers = Object.entries(scores || {})
     .sort(([, a], [, b]) => b - a)
 
@@ -53,6 +58,44 @@ export default function Results({ scores, onRestart }) {
 
   const getScorePercentage = (score) => {
     return Math.min(Math.round((score / 100) * 100), 100)
+  }
+
+  useEffect(() => {
+    if (user?.uid) {
+      loadPreviousAssessments()
+    }
+  }, [user])
+
+  const loadPreviousAssessments = async () => {
+    try {
+      const assessments = await getUserAssessments(user.uid, 5)
+      setPreviousAssessments(assessments)
+    } catch (error) {
+      console.error('Error loading previous assessments:', error)
+    }
+  }
+
+  const handleSaveResults = async () => {
+    if (!user?.uid) {
+      alert('Please sign in to save your results')
+      return
+    }
+
+    setSaving(true)
+    try {
+      await saveAssessmentResult(user.uid, {
+        scores,
+        topCareer,
+        answers: [] // You can pass the actual answers if available
+      })
+      setSaved(true)
+      await loadPreviousAssessments() // Refresh the list
+    } catch (error) {
+      console.error('Error saving results:', error)
+      alert('Failed to save results. Please try again.')
+    } finally {
+      setSaving(false)
+    }
   }
 
   return (
@@ -139,6 +182,59 @@ export default function Results({ scores, onRestart }) {
           <li>Network with professionals in your chosen field to understand market trends and opportunities in India.</li>
         </ul>
       </div>
+
+      {user?.uid && (
+        <div className="save-results-section">
+          <button
+            className="save-results-button"
+            onClick={handleSaveResults}
+            disabled={saving || saved}
+          >
+            {saving ? 'Saving...' : saved ? '✓ Results Saved' : '💾 Save Results'}
+          </button>
+          {saved && <p className="save-status">Your assessment results have been saved to your profile!</p>}
+        </div>
+      )}
+
+      {previousAssessments.length > 0 && (
+        <div className="previous-assessments-section">
+          <h2>Your Previous Assessments</h2>
+          <div className="assessments-grid">
+            {previousAssessments.map((assessment, index) => (
+              <div key={assessment.id} className="assessment-card">
+                <div className="assessment-date">
+                  {new Date(assessment.completedAt).toLocaleDateString('en-IN', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                  })}
+                </div>
+                <div className="assessment-scores">
+                  {Object.entries(assessment.scores).slice(0, 4).map(([career, score]) => (
+                    <div key={career} className="assessment-score-item">
+                      <div className="assessment-score-label">{career}</div>
+                      <div className="assessment-score-value">{Math.round(score)}%</div>
+                    </div>
+                  ))}
+                </div>
+                <div className="assessment-top-career">
+                  <h4>Top Career Match</h4>
+                  <p>{assessment.topCareer}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {!user?.uid && previousAssessments.length === 0 && (
+        <div className="previous-assessments-section">
+          <h2>Your Assessment History</h2>
+          <div className="no-assessments">
+            <p>Sign in to save and view your assessment history</p>
+          </div>
+        </div>
+      )}
 
       <button className="restart-button" onClick={onRestart}>
         Retake Assessment
