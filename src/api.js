@@ -1,83 +1,67 @@
-const baseUrl = import.meta.env.VITE_API_BASE || ''
+import {
+  signInWithGoogle as firebaseSignInWithGoogle,
+  signUpWithEmail,
+  signInWithEmail,
+  signOutUser,
+  saveAssessmentResult as firebaseSaveAssessmentResult,
+  getUserAssessments as firebaseGetUserAssessments,
+  saveUserProfile
+} from './firebase'
 
-const handleResponse = async (response) => {
-  const data = await response.json().catch(() => ({}))
-  if (!response.ok) {
-    throw new Error(data.message || 'Server request failed')
+export const signInWithGoogle = async () => {
+  const user = await firebaseSignInWithGoogle()
+  if (!user) {
+    throw new Error('Google sign-in failed')
   }
-  return data
-}
 
-const getAuthHeaders = () => {
-  const token = localStorage.getItem('authToken')
-  return token ? { Authorization: `Bearer ${token}` } : {}
-}
-
-export const signInWithGoogle = async (token) => {
-  const response = await fetch(`${baseUrl}/api/auth/google`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ token })
+  await saveUserProfile(user.uid, {
+    fullName: user.displayName || '',
+    email: user.email,
+    provider: 'google'
   })
 
-  const data = await handleResponse(response)
-  localStorage.setItem('authToken', data.token)
-  return data
+  return {
+    id: user.uid,
+    fullName: user.displayName || user.email || '',
+    email: user.email,
+    uid: user.uid
+  }
 }
 
 export const signupUser = async (fullName, email, password) => {
-  const response = await fetch(`${baseUrl}/api/auth/signup`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ fullName, email, password })
+  const user = await signUpWithEmail(email, password)
+  await saveUserProfile(user.uid, {
+    fullName,
+    email,
+    provider: 'email'
   })
 
-  const data = await handleResponse(response)
-  localStorage.setItem('authToken', data.token)
-  return data
+  return {
+    id: user.uid,
+    fullName,
+    email,
+    uid: user.uid
+  }
 }
 
 export const loginUser = async (email, password) => {
-  const response = await fetch(`${baseUrl}/api/auth/login`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ email, password })
-  })
-
-  const data = await handleResponse(response)
-  localStorage.setItem('authToken', data.token)
-  return data
+  const user = await signInWithEmail(email, password)
+  return {
+    id: user.uid,
+    fullName: user.displayName || user.email || '',
+    email: user.email,
+    uid: user.uid
+  }
 }
 
-export const logoutUser = () => {
-  localStorage.removeItem('authToken')
+export const logoutUser = async () => {
+  await signOutUser()
 }
 
 export const saveAssessmentResult = async (userId, assessmentData) => {
-  const response = await fetch(`${baseUrl}/api/assessments`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      ...getAuthHeaders()
-    },
-    body: JSON.stringify(assessmentData)
-  })
-
-  return handleResponse(response)
+  return firebaseSaveAssessmentResult(userId, assessmentData)
 }
 
 export const getUserAssessments = async (userId, limitCount = 10) => {
-  const response = await fetch(`${baseUrl}/api/assessments?limit=${limitCount}`, {
-    headers: {
-      ...getAuthHeaders()
-    }
-  })
-
-  return handleResponse(response)
+  return firebaseGetUserAssessments(userId, limitCount)
 }

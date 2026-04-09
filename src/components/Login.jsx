@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import '../styles/Login.css'
 import { loginUser, signupUser, signInWithGoogle } from '../api'
 
@@ -11,46 +11,21 @@ export default function Login({ onLogin }) {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
-  useEffect(() => {
-    // Initialize Google Sign-In button
-    const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID
-    if (!googleClientId || googleClientId.includes('your-google')) {
-      console.warn('Google Client ID not configured. Google Sign-In will not work.')
-      return
-    }
-    if (window.google && window.google.accounts) {
-      window.google.accounts.id.initialize({
-        client_id: googleClientId,
-        callback: handleGoogleCallback
-      })
-      window.google.accounts.id.renderButton(
-        document.getElementById('google-signin-btn'),
-        { theme: 'outline', size: 'large', width: '100%' }
-      )
-    }
-  }, [])
-
-  const handleGoogleCallback = async (response) => {
+  const handleGoogleSignIn = async () => {
     setLoading(true)
     setError('')
     try {
-      const user = await signInWithGoogle(response.credential)
+      const user = await signInWithGoogle()
       onLogin({
         username: user.fullName || user.email,
         email: user.email,
-        uid: user.id
+        uid: user.uid
       })
     } catch (err) {
       setError(`Google sign-in failed: ${err?.message || 'Please try again'}`)
       console.error('Google sign-in error:', err)
     } finally {
       setLoading(false)
-    }
-  }
-
-  const handleGoogleSignIn = () => {
-    if (window.google && window.google.accounts) {
-      window.google.accounts.id.prompt()
     }
   }
 
@@ -75,7 +50,7 @@ export default function Login({ onLogin }) {
       onLogin({
         username: user.fullName || user.email,
         email: user.email,
-        uid: user.id
+        uid: user.uid
       })
     } catch (error) {
       setError(`Invalid email or password. ${error?.message || ''}`)
@@ -106,7 +81,7 @@ export default function Login({ onLogin }) {
       onLogin({
         username: user.fullName,
         email: user.email,
-        uid: user.id
+        uid: user.uid
       })
     } catch (error) {
       setError(`Failed to create account. ${error?.message || 'Please try again.'}`)
@@ -148,7 +123,13 @@ export default function Login({ onLogin }) {
 
           {/* Google Sign In Button */}
           <div className="social-auth-section">
-            <div id="google-signin-btn"></div>
+            <button
+              className="google-signin-button"
+              onClick={handleGoogleSignIn}
+              disabled={loading}
+            >
+              {loading ? 'Signing in with Google...' : 'Sign in with Google'}
+            </button>
             <div className="divider">
               <span>or</span>
             </div>
