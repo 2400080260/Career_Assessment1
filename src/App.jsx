@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Home from './components/Home'
 import Assessment from './components/Assessment'
 import Results from './components/Results'
@@ -8,10 +8,13 @@ import { auth } from './firebase'
 import { onAuthStateChanged } from 'firebase/auth'
 import './App.css'
 
+const INACTIVITY_TIMEOUT_MS = 5 * 60 * 1000
+
 function App() {
   const [currentPage, setCurrentPage] = useState('login')
   const [assessmentScores, setAssessmentScores] = useState(null)
   const [user, setUser] = useState(null)
+  const idleTimer = useRef(null)
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
@@ -31,6 +34,39 @@ function App() {
     return () => unsubscribe()
   }, [])
 
+  useEffect(() => {
+    const startTimer = () => {
+      if (idleTimer.current) {
+        clearTimeout(idleTimer.current)
+      }
+      idleTimer.current = window.setTimeout(() => {
+        if (user) {
+          handleLogout(true)
+        }
+      }, INACTIVITY_TIMEOUT_MS)
+    }
+
+    const resetTimer = () => {
+      if (user) {
+        startTimer()
+      }
+    }
+
+    const events = ['mousemove', 'mousedown', 'keydown', 'scroll', 'touchstart']
+    events.forEach((event) => window.addEventListener(event, resetTimer))
+
+    if (user) {
+      startTimer()
+    }
+
+    return () => {
+      if (idleTimer.current) {
+        clearTimeout(idleTimer.current)
+      }
+      events.forEach((event) => window.removeEventListener(event, resetTimer))
+    }
+  }, [user])
+
   const handleStartAssessment = () => {
     setCurrentPage('assessment')
   }
@@ -40,11 +76,22 @@ function App() {
     setCurrentPage('home')
   }
 
-  const handleLogout = () => {
-    logoutUser()
+  const handleLogout = async (isIdle = false) => {
+    try {
+      await logoutUser()
+    } catch (error) {
+      console.error('Logout failed:', error)
+    }
+    if (idleTimer.current) {
+      clearTimeout(idleTimer.current)
+      idleTimer.current = null
+    }
     setUser(null)
     setAssessmentScores(null)
     setCurrentPage('login')
+    if (isIdle) {
+      window.alert('You have been logged out due to 5 minutes of inactivity.')
+    }
   }
 
   const handleCompleteAssessment = (scores) => {
