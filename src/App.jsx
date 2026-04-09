@@ -1,15 +1,35 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Home from './components/Home'
 import Assessment from './components/Assessment'
 import Results from './components/Results'
 import Login from './components/Login'
 import { logoutUser } from './api'
+import { auth } from './firebase'
+import { onAuthStateChanged } from 'firebase/auth'
 import './App.css'
 
 function App() {
   const [currentPage, setCurrentPage] = useState('login')
   const [assessmentScores, setAssessmentScores] = useState(null)
   const [user, setUser] = useState(null)
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      if (firebaseUser) {
+        setUser({
+          username: firebaseUser.displayName || firebaseUser.email,
+          email: firebaseUser.email,
+          uid: firebaseUser.uid
+        })
+        setCurrentPage('home')
+      } else {
+        setUser(null)
+        setCurrentPage('login')
+      }
+    })
+
+    return () => unsubscribe()
+  }, [])
 
   const handleStartAssessment = () => {
     setCurrentPage('assessment')
