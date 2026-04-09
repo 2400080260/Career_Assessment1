@@ -1,7 +1,7 @@
 import { initializeApp } from 'firebase/app';
 import { getAnalytics } from 'firebase/analytics';
 import { getAuth, GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'firebase/auth';
-import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, query, where, getDocs, addDoc, orderBy, limit } from 'firebase/firestore';
+import { getDatabase, ref, set, update, get, push, query, orderByChild, equalTo } from 'firebase/database';
 import { firebaseConfig } from './firebase-config';
 
 const validateFirebaseConfig = (config) => {
@@ -30,7 +30,7 @@ validateFirebaseConfig(firebaseConfig);
 const app = initializeApp(firebaseConfig);
 export const analytics = getAnalytics(app);
 export const auth = getAuth(app);
-export const db = getFirestore(app);
+export const db = getDatabase(app);
 export const googleProvider = new GoogleAuthProvider();
 
 export const signOutUser = async () => {
@@ -45,12 +45,22 @@ export const signOutUser = async () => {
 // Database functions for user data
 export const saveUserProfile = async (userId, userData) => {
   try {
-    const userRef = doc(db, 'users', userId);
-    await setDoc(userRef, {
-      ...userData,
-      createdAt: new Date(),
-      lastLogin: new Date()
-    }, { merge: true });
+    const userRef = ref(db, `users/${userId}`);
+    const snapshot = await get(userRef);
+    const timestamp = new Date().toISOString();
+
+    if (!snapshot.exists()) {
+      await set(userRef, {
+        ...userData,
+        createdAt: timestamp,
+        lastLogin: timestamp
+      });
+    } else {
+      await update(userRef, {
+        ...userData,
+        lastLogin: timestamp
+      });
+    }
   } catch (error) {
     console.error('Error saving user profile:', error);
     throw error;
@@ -59,9 +69,9 @@ export const saveUserProfile = async (userId, userData) => {
 
 export const getUserProfile = async (userId) => {
   try {
-    const userRef = doc(db, 'users', userId);
-    const userSnap = await getDoc(userRef);
-    return userSnap.exists() ? userSnap.data() : null;
+    const userRef = ref(db, `users/${userId}`);
+    const userSnap = await get(userRef);
+    return userSnap.exists() ? userSnap.val() : null;
   } catch (error) {
     console.error('Error getting user profile:', error);
     throw error;
@@ -70,16 +80,17 @@ export const getUserProfile = async (userId) => {
 
 export const saveAssessmentResult = async (userId, assessmentData) => {
   try {
-    const assessmentRef = collection(db, 'assessments');
+    const assessmentRef = ref(db, 'assessments');
+    const newAssessmentRef = push(assessmentRef);
     const newAssessment = {
       userId,
       scores: assessmentData.scores,
       topCareer: assessmentData.topCareer,
-      completedAt: new Date(),
+      completedAt: new Date().toISOString(),
       answers: assessmentData.answers || []
     };
-    const docRef = await addDoc(assessmentRef, newAssessment);
-    return docRef.id;
+    await set(newAssessmentRef, newAssessment);
+    return newAssessmentRef.key;
   } catch (error) {
     console.error('Error saving assessment result:', error);
     throw error;
@@ -88,18 +99,20 @@ export const saveAssessmentResult = async (userId, assessmentData) => {
 
 export const getUserAssessments = async (userId, limitCount = 10) => {
   try {
-    const assessmentsRef = collection(db, 'assessments');
-    const q = query(
-      assessmentsRef,
-      where('userId', '==', userId),
-      orderBy('completedAt', 'desc'),
-      limit(limitCount)
-    );
-    const querySnapshot = await getDocs(q);
-    return querySnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    }));
+    const assessmentsRef = ref(db, 'assessments');
+    const assessmentsQuery = query(assessmentsRef, orderByChild('userId'), equalTo(userId));
+    const querySnapshot = await get(assessmentsQuery);
+    const assessments = [];
+    querySnapshot.forEach((child) => {
+      assessments.push({
+        id: child.key,
+        ...child.val()
+      });
+    });
+
+    return assessments
+      .sort((a, b) => new Date(b.completedAt) - new Date(a.completedAt))
+      .slice(0, limitCount);
   } catch (error) {
     console.error('Error getting user assessments:', error);
     throw error;
@@ -108,10 +121,10 @@ export const getUserAssessments = async (userId, limitCount = 10) => {
 
 export const updateUserProfile = async (userId, updates) => {
   try {
-    const userRef = doc(db, 'users', userId);
-    await updateDoc(userRef, {
+    const userRef = ref(db, `users/${userId}`);
+    await update(userRef, {
       ...updates,
-      lastUpdated: new Date()
+      lastUpdated: new Date().toISOString()
     });
   } catch (error) {
     console.error('Error updating user profile:', error);
