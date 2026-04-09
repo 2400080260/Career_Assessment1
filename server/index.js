@@ -22,7 +22,21 @@ if (GOOGLE_CLIENT_ID) {
 }
 
 app.use(cors())
-app.use(express.json())
+app.use(express.json({
+  verify: (req, res, buf) => {
+    req.rawBody = buf.toString()
+  }
+}))
+
+app.use((err, req, res, next) => {
+  if (err) {
+    console.error('JSON parse error:', req.method, req.originalUrl)
+    console.error('Raw body:', req.rawBody)
+    console.error(err)
+    return res.status(400).json({ message: 'Invalid JSON body' })
+  }
+  next()
+})
 
 const authenticate = (req, res, next) => {
   const authHeader = req.headers.authorization
@@ -68,6 +82,7 @@ app.post('/api/auth/google', async (req, res) => {
   }
 })
 
+app.post('/api/auth/signup', async (req, res) => {
   const { fullName, email, password } = req.body
   if (!fullName || !email || !password) {
     return res.status(400).json({ message: 'Full name, email, and password are required' })
